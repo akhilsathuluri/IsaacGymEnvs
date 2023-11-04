@@ -76,7 +76,8 @@ params:
     mini_epochs: 6
     critic_coef: 5
     clip_value: False
-    seq_len: 4
+    # seq_len: 4
+    seq_length: 4
     bounds_loss_coef: 10
     amp_obs_demo_buffer_size: 200000
     amp_replay_buffer_size: 1000000

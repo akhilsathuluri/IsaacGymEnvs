@@ -26,27 +26,35 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import torch
+from rl_games.common import datasets
 
-import os
-import json
 
-from poselib.skeleton.skeleton3d import SkeletonTree, SkeletonState, SkeletonMotion
-from poselib.visualization.common import plot_skeleton_state, plot_skeleton_motion_interactive
+class AMPDataset(datasets.PPODataset):
+    def __init__(self, batch_size, minibatch_size, is_discrete, is_rnn, device, seq_len):
+        super().__init__(batch_size, minibatch_size, is_discrete, is_rnn, device, seq_len)
+        self._idx_buf = torch.randperm(batch_size)
+        return
+    
+    def update_mu_sigma(self, mu, sigma):	  
+        raise NotImplementedError()
+        return
 
-# source fbx file path
-# fbx_file = "data/01_01_cmu.fbx"
-fbx_file = "data/0x_cmu_silly_dance.fbx"
+    def _get_item(self, idx):
+        start = idx * self.minibatch_size
+        end = (idx + 1) * self.minibatch_size
+        sample_idx = self._idx_buf[start:end]
 
-# import fbx file - make sure to provide a valid joint name for root_joint
-motion = SkeletonMotion.from_fbx(
-    fbx_file_path=fbx_file,
-    root_joint="Hips",
-    fps=60
-)
+        input_dict = {}
+        for k,v in self.values_dict.items():
+            if k not in self.special_names and v is not None:
+                input_dict[k] = v[sample_idx]
+                
+        if (end >= self.batch_size):
+            self._shuffle_idx_buf()
 
-# save motion in npy format
-# motion.to_file("data/01_01_cmu.npy")
-motion.to_file("data/0x_cmu_silly_dance.npy")
+        return input_dict
 
-# visualize motion
-plot_skeleton_motion_interactive(motion)
+    def _shuffle_idx_buf(self):
+        self._idx_buf[:] = torch.randperm(self.batch_size)
+        return

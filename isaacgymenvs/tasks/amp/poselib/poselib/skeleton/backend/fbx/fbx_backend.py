@@ -170,7 +170,22 @@ def _get_frame_count(fbx_scene):
     anim_range = anim_stack.GetLocalTimeSpan()
     duration = anim_range.GetDuration()
     fps = duration.GetFrameRate(duration.GetGlobalTimeMode())
-    frame_count = duration.GetFrameCount(True)
+    # frame_count = duration.GetFrameCount(True)
+
+    frame_count = duration.GetFrameCount()
+
+    # timeModes = (
+    #     'eDefaultMode', 'eFrames120', 'eFrames100', 'eFrames60', 'eFrames50', 'eFrames48',
+    #     'eFrames30', 'eFrames30Drop', 'eNTSCDropFrame', 'eNTSCFullFrame', 'ePAL',
+    #     'eFrames24', 'eFrames1000', 'eFilmFullFrame', 'eCustom', 'eFrames96', 'eFrames72',
+    #     'eFrames59dot94', 'eFrames119dot88')
+
+    # frame_count = duration.GetFrameCount(timeModes.index('eFrames120'))
+
+    # gobalSettings = lScene.GetGlobalSettings()
+    # fileTimeMode = gobalSettings.GetTimeMode()
+    # frame_count = duration.GetFrameCount(fileTimeMode)
+    # frame_count = 60
 
     return anim_range, frame_count, fps
 

@@ -26,27 +26,21 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import torch.nn as nn
+from rl_games.algos_torch.models import ModelA2CContinuousLogStd
 
-import os
-import json
+class ModelHRLContinuous(ModelA2CContinuousLogStd):
+    def __init__(self, network):
+        super().__init__(network)
+        return
 
-from poselib.skeleton.skeleton3d import SkeletonTree, SkeletonState, SkeletonMotion
-from poselib.visualization.common import plot_skeleton_state, plot_skeleton_motion_interactive
+    def build(self, config):
+        net = self.network_builder.build('amp', **config)
+        for name, _ in net.named_parameters():
+            print(name)
+        return ModelHRLContinuous.Network(net)
 
-# source fbx file path
-# fbx_file = "data/01_01_cmu.fbx"
-fbx_file = "data/0x_cmu_silly_dance.fbx"
-
-# import fbx file - make sure to provide a valid joint name for root_joint
-motion = SkeletonMotion.from_fbx(
-    fbx_file_path=fbx_file,
-    root_joint="Hips",
-    fps=60
-)
-
-# save motion in npy format
-# motion.to_file("data/01_01_cmu.npy")
-motion.to_file("data/0x_cmu_silly_dance.npy")
-
-# visualize motion
-plot_skeleton_motion_interactive(motion)
+    class Network(ModelA2CContinuousLogStd.Network):
+        def __init__(self, a2c_network):
+            super().__init__(a2c_network)
+            return

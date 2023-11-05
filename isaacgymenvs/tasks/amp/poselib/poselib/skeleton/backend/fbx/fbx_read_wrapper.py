@@ -31,6 +31,7 @@ def fbx_to_array(fbx_file_path, root_joint, fps):
     """
 
     # Ensure the file path is valid
+    print(fbx_file_path)
     fbx_file_path = os.path.abspath(fbx_file_path)
     assert os.path.exists(fbx_file_path)
 

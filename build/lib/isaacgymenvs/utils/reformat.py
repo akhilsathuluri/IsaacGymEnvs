@@ -26,27 +26,30 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from omegaconf import DictConfig, OmegaConf
+from typing import Dict
 
-import os
-import json
+def omegaconf_to_dict(d: DictConfig)->Dict:
+    """Converts an omegaconf DictConfig to a python Dict, respecting variable interpolation."""
+    ret = {}
+    for k, v in d.items():
+        if isinstance(v, DictConfig):
+            ret[k] = omegaconf_to_dict(v)
+        else:
+            ret[k] = v
+    return ret
 
-from poselib.skeleton.skeleton3d import SkeletonTree, SkeletonState, SkeletonMotion
-from poselib.visualization.common import plot_skeleton_state, plot_skeleton_motion_interactive
+def print_dict(val, nesting: int = -4, start: bool = True):
+    """Outputs a nested dictionory."""
+    if type(val) == dict:
+        if not start:
+            print('')
+        nesting += 4
+        for k in val:
+            print(nesting * ' ', end='')
+            print(k, end=': ')
+            print_dict(val[k], nesting, start=False)
+    else:
+        print(val)
 
-# source fbx file path
-# fbx_file = "data/01_01_cmu.fbx"
-fbx_file = "data/0x_cmu_silly_dance.fbx"
-
-# import fbx file - make sure to provide a valid joint name for root_joint
-motion = SkeletonMotion.from_fbx(
-    fbx_file_path=fbx_file,
-    root_joint="Hips",
-    fps=60
-)
-
-# save motion in npy format
-# motion.to_file("data/01_01_cmu.npy")
-motion.to_file("data/0x_cmu_silly_dance.npy")
-
-# visualize motion
-plot_skeleton_motion_interactive(motion)
+# EOF

@@ -1,0 +1,24 @@
+{
+    "source_motion": "data/01_01_cmu.npy",
+    "target_motion_path": "data/01_01_cmu_amp.npy",
+    "source_tpose": "data/cmu_tpose.npy",
+    "target_tpose": "data/amp_ergoCub_tpose.npy",
+    "joint_mapping": {
+         "Hips": "root_link",
+         "LeftUpLeg": "l_upper_leg",
+         "LeftLeg": "l_lower_leg",
+         "LeftFoot": "l_ankle_2",
+         "RightUpLeg": "r_upper_leg",
+         "RightLeg": "r_lower_leg",
+         "RightFoot": "r_ankle_2",
+         "LeftArm": "l_upperarm",
+         "LeftForeArm": "l_forearm",
+         "RightArm": "r_upperarm",
+         "RightForeArm": "r_forearm"
+    },
+    "rotation": [0, 0, 0.7071068, 0.7071068],
+    "scale": 0.056444,
+	"root_height_offset": 0.05,
+	"trim_frame_beg": 75,
+	"trim_frame_end": 372
+}
